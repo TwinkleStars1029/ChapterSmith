@@ -1,59 +1,72 @@
 ﻿<template>
   <section class="page import-page">
     <div class="panel">
-      <h1>載入與設定</h1>
-      <p class="muted">上傳你的對話 txt，選擇對話來源，設定每章節訊息數量。</p>
-      <div class="section">
-        <h2>對話來源</h2>
-        <p class="muted">- 支援 卿卿我我、SillyTavern 官方對話紀錄格式<br>
-        - chatGPT、Gemini、claude、perplexity、Grok，請使用擴充元件 chatBackup 進行備份</p>
-        <SourcePicker v-model="store.settings.sourceApp" />
-      </div>
+      <header class="import-header">
+        <div>
+          <h1>載入與設定</h1>
+          <p class="muted">上傳你的對話檔案，選擇來源 app，設定每章節訊息數量。</p>
+        </div>
+      </header>
 
-      <div class="section">
-        <h2>對話紀錄上傳</h2>
-        <div
-          class="upload-area"
-          :class="{ active: isDragOver }"
-          @click="triggerFile"
-          @dragenter.prevent="onDragEnter"
-          @dragleave.prevent="onDragLeave"
-          @dragover.prevent
-          @drop.prevent="onDrop"
-        >
-          <input
-            ref="fileInput"
-            type="file"
-            :accept="fileAccept"
-            @change="onFileChange"
-          />
-          <div>
-            <strong>拖拉 {{ fileLabel }} 檔案</strong>
-            <div class="muted">或點擊選擇檔案</div>
+      <div class="import-layout">
+        <div class="import-main">
+          <div class="card">
+            <h2>對話紀錄上傳</h2>
+            <div
+              class="upload-area"
+              :class="{ active: isDragOver }"
+              @click="triggerFile"
+              @dragenter.prevent="onDragEnter"
+              @dragleave.prevent="onDragLeave"
+              @dragover.prevent
+              @drop.prevent="onDrop"
+            >
+              <input
+                ref="fileInput"
+                type="file"
+                :accept="fileAccept"
+                @change="onFileChange"
+              />
+              <div>
+                <strong>拖拉 {{ fileLabel }} 檔案</strong>
+                <div class="muted">或點擊選擇檔案</div>
+              </div>
+              <div v-if="fileName" class="file-name">已載入：{{ fileName }}</div>
+            </div>
           </div>
-          <div v-if="fileName" class="file-name">已載入：{{ fileName }}</div>
+
+          <div class="card settings-grid">
+            <div>
+              <h2>來源 App</h2>
+              <SourcePicker v-model="store.settings.sourceApp" />
+            </div>
+            <div>
+              <h2>章節設定</h2>
+              <label class="field">
+                <span>每章節訊息數量</span>
+                <input type="number" min="1" v-model.number="store.settings.chapterSize" />
+              </label>
+            </div>
+          </div>
         </div>
+
+        <aside class="import-side">
+          <div class="card">
+            <h2>解析摘要</h2>
+            <div class="summary">
+              <div>訊息數量：{{ store.messages.length }}</div>
+              <div>角色數量：{{ uniqueSpeakers }}</div>
+              <div class="status-row">
+                <span>解析狀態：</span>
+                <span class="status-pill" :class="parseStatusClass">{{ parseStatus }}</span>
+              </div>
+            </div>
+            <p v-if="store.parseError" class="error">失敗原因：{{ store.parseError }}</p>
+          </div>
+        </aside>
       </div>
 
-      <div class="section">
-        <h2>章節設定</h2>
-        <label class="field">
-          <span>每章節訊息數量</span>
-          <input type="number" min="1" v-model.number="store.settings.chapterSize" />
-        </label>
-      </div>
-
-      <div class="section">
-        <h2>解析摘要</h2>
-        <div class="summary">
-          <div>訊息數量：{{ store.messages.length }}</div>
-          <div>角色數量：{{ uniqueSpeakers }}</div>
-          <div>解析狀態：{{ parseStatus }}</div>
-        </div>
-        <p v-if="store.parseError" class="error">失敗原因：{{ store.parseError }}</p>
-      </div>
-
-      <div class="actions">
+      <div class="actions import-actions">
         <button class="primary" type="button" @click="onSegment">開始切章</button>
         <button class="ghost" type="button" @click="onClear">清除</button>
       </div>
@@ -83,6 +96,11 @@ const parseStatus = computed(() => {
   if (store.parseError) return "失敗";
   if (store.messages.length > 0) return "成功";
   return "尚未解析";
+});
+const parseStatusClass = computed(() => {
+  if (store.parseError) return "is-fail";
+  if (store.messages.length > 0) return "is-success";
+  return "is-idle";
 });
 const fileAccept = computed(() =>
   store.settings.sourceApp === "chatbackup" ? ".md" : ".txt"

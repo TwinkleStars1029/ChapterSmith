@@ -23,19 +23,31 @@
         </aside>
 
         <section class="chapter-detail" v-if="selectedChapter">
+          <div class="chapter-select">
+            <label>
+              <span>章節選擇</span>
+              <select v-model="selectedIdModel">
+                <option
+                  v-for="(chapter, index) in store.chapters"
+                  :key="chapter.id"
+                  :value="chapter.id"
+                >
+                  第{{ index + 1 }}章
+                </option>
+              </select>
+            </label>
+          </div>
+            <button class="primary" type="button" @click="downloadCurrent">下載本章節</button>
           <div class="chapter-header">
             <div class="chapter-controls">
               <ChapterTitleInput v-model="chapterTitle" />
               <div class="adjust-controls">
+                <span class="muted">（-X 送出 X 則到下一章，+X 從下一章取 X 則）</span>
                 <button type="button" @click="adjust(-5)">-5</button>
                 <button type="button" @click="adjust(-1)">-1</button>
                 <button type="button" @click="adjust(1)">+1</button>
                 <button type="button" @click="adjust(5)">+5</button>
-                <span class="muted">（-X 送出 X 則到下一章，+X 從下一章取 X 則）</span>
               </div>
-            </div>
-            <div class="actions header-actions">
-              <button class="primary" type="button" @click="downloadCurrent">下載本章節</button>
             </div>
           </div>
 
@@ -69,6 +81,13 @@ const selectedChapter = computed(() => store.selectedChapter);
 const selectedIndex = computed(() =>
   store.chapters.findIndex((chapter) => chapter.id === store.selectedChapterId)
 );
+
+const selectedIdModel = computed({
+  get: () => store.selectedChapterId ?? "",
+  set: (value: string) => {
+    if (value) store.selectChapter(value);
+  }
+});
 
 const chapterTitle = computed({
   get: () => selectedChapter.value?.title ?? "",
