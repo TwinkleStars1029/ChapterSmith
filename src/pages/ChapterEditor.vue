@@ -42,11 +42,11 @@
             <div class="chapter-controls">
               <ChapterTitleInput v-model="chapterTitle" />
               <div class="adjust-controls">
-                <span class="muted">（-X 送出 X 則到下一章，+X 從下一章取 X 則）</span>
                 <button type="button" @click="adjust(-5)">-5</button>
                 <button type="button" @click="adjust(-1)">-1</button>
                 <button type="button" @click="adjust(1)">+1</button>
                 <button type="button" @click="adjust(5)">+5</button>
+                <span class="muted">（-X 送出 X 則到下一章，+X 從下一章取 X 則）</span>
               </div>
             </div>
           </div>
