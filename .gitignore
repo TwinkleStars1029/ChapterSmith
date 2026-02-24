@@ -1,0 +1,7 @@
+﻿node_modules/
+dist/
+playwright-report/
+playwright/.cache/
+coverage/
+.DS_Store
+tests/
