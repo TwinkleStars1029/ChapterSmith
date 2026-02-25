@@ -3,7 +3,7 @@
     <div class="panel wide">
       <header class="panel-header">
         <div>
-          <h3>章節編輯</h3>
+          <h1>章節編輯</h1>
           <p class="muted">微調章節切點、設定章節名稱並下載整理後檔案。</p>
         </div>
         <div class="actions">

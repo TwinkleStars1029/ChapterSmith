@@ -158,7 +158,6 @@ a {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
   margin-bottom: 24px;
 }
 
@@ -168,7 +167,7 @@ h1 {
 }
 
 h2 {
-  margin: 0 0 12px;
+  margin: 0 0 6px;
   font-size: 20px;
 }
 
@@ -290,7 +289,6 @@ h2 {
 .actions {
   display: flex;
   gap: 12px;
-  margin-top: 24px;
 }
 
 button {
@@ -525,7 +523,7 @@ button.ghost {
   }
 
   .panel {
-    padding: 24px;
+    padding: 12px;
     max-height: none;
     overflow: visible;
   }
