@@ -45,7 +45,7 @@ a {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  padding: 24px 40px;
+  padding: 12px 12px;
   background: #fffaf2;
   border-bottom: 1px solid var(--line);
   position: sticky;
@@ -498,9 +498,25 @@ button.ghost {
     overflow: auto;
   }
 
+
+.panel-header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
   .app-header {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .nav {
+    gap: 8px;
+  }
+
+  .nav-link {
+    padding: 6px 10px;
+    font-size: 12px;
   }
 
   .app-main {

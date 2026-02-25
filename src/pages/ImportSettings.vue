@@ -3,7 +3,7 @@
     <div class="panel">
       <header class="import-header">
         <div>
-          <h1>載入與設定</h1>
+          <h1>載入設定</h1>
           <p class="muted">上傳你的對話檔案，選擇來源 app，設定每章節訊息數量。</p>
         </div>
       </header>
