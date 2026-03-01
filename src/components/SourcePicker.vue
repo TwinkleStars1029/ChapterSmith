@@ -23,7 +23,7 @@ defineEmits<{ (e: "update:modelValue", value: SourceApp): void }>();
 const options: { value: SourceApp; label: string }[] = [
   { value: "qingqing", label: "卿卿我我" },
   { value: "tavern", label: "SillyTavern" },
-  { value: "gemini", label: "Gemini" },
+  /*{ value: "gemini", label: "Gemini" },*/
   { value: "chatbackup", label: "ChatBackup" }
 ];
 </script>

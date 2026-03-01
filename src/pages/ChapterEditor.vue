@@ -6,7 +6,8 @@
           <h1>章節編輯</h1>
           <p class="muted">微調章節切點、設定章節名稱並下載整理後檔案。</p>
         </div>
-        <div class="actions">
+        <div v-if="store.chapters.length" class="actions">
+          <button class="ghost" type="button" @click="onExportProject">匯出專案</button>
           <button class="ghost" type="button" @click="downloadAll">下載全部章節 (zip)</button>
         </div>
       </header>
@@ -51,8 +52,9 @@
             </div>
           </div>
 
-          <div class="message-scroll">
+          <div class="message-scroll" ref="messageScrollRef">
             <MessageList :messages="selectedChapter.messages" />
+            <button class="to-top" type="button" @click="scrollToTop">回到頂部</button>
           </div>
         </section>
         <section class="chapter-detail" v-else>
@@ -64,7 +66,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import ChapterList from "../components/ChapterList.vue";
 import ChapterTitleInput from "../components/ChapterTitleInput.vue";
 import MessageList from "../components/MessageList.vue";
@@ -72,6 +74,7 @@ import { useSessionStore } from "../stores/session";
 import { chapterFilename } from "../utils/filename";
 import { formatChapterText } from "../utils/formatter";
 import { downloadBlob, downloadText } from "../utils/download";
+import { buildProject } from "../utils/project";
 import JSZip from "jszip";
 
 const store = useSessionStore();
@@ -81,6 +84,8 @@ const selectedChapter = computed(() => store.selectedChapter);
 const selectedIndex = computed(() =>
   store.chapters.findIndex((chapter) => chapter.id === store.selectedChapterId)
 );
+
+const messageScrollRef = ref<HTMLElement | null>(null);
 
 const selectedIdModel = computed({
   get: () => store.selectedChapterId ?? "",
@@ -111,6 +116,25 @@ function downloadCurrent() {
   downloadText(filename, content);
 }
 
+function buildProjectFilename() {
+  const stamp = new Date().toISOString().replace(/[:.]/g, "-");
+  return `chaptersmith_project_${stamp}.json`;
+}
+
+function onExportProject() {
+  const project = buildProject({
+    settings: store.settings,
+    rawText: store.rawText,
+    messages: store.messages,
+    chapters: store.chapters,
+    selectedChapterId: store.selectedChapterId
+  });
+  const blob = new Blob([JSON.stringify(project, null, 2)], {
+    type: "application/json;charset=utf-8"
+  });
+  downloadBlob(buildProjectFilename(), blob);
+}
+
 async function downloadAll() {
   const zip = new JSZip();
   store.chapters.forEach((chapter, index) => {
@@ -120,6 +144,25 @@ async function downloadAll() {
   });
   const blob = await zip.generateAsync({ type: "blob" });
   downloadBlob("chapters.zip", blob);
+}
+
+function scrollToTop() {
+  const el = messageScrollRef.value;
+  if (el && el.scrollHeight > el.clientHeight) {
+    el.scrollTo({ top: 0, behavior: "smooth" });
+    return;
+  }
+  const appMain = document.querySelector(".app-main") as HTMLElement | null;
+  if (appMain && appMain.scrollHeight > appMain.clientHeight) {
+    appMain.scrollTo({ top: 0, behavior: "smooth" });
+    return;
+  }
+  const scrollingEl = document.scrollingElement;
+  if (scrollingEl) {
+    scrollingEl.scrollTo({ top: 0, behavior: "smooth" });
+    return;
+  }
+  window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
 </script>

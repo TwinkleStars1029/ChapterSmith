@@ -5,13 +5,14 @@
         <span class="message-role" :data-role="message.role">{{ roleLabel(message.role) }}</span>
         <span class="message-speaker">{{ message.speaker || "Unknown" }}</span>
       </div>
-      <pre class="message-content">{{ message.content }}</pre>
+      <div class="message-content markdown" v-html="renderMarkdown(message.content)"></div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import type { ChatMessage, ChatRole } from "../types";
+import { renderMarkdown } from "../utils/markdown";
 
 defineProps<{ messages: ChatMessage[] }>();
 
