@@ -33,7 +33,6 @@
                   :key="chapter.id"
                   :value="chapter.id"
                 >
-                  第{{ index + 1 }}章
                 </option>
               </select>
             </label>
@@ -66,7 +65,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import ChapterList from "../components/ChapterList.vue";
 import ChapterTitleInput from "../components/ChapterTitleInput.vue";
 import MessageList from "../components/MessageList.vue";
@@ -74,7 +73,7 @@ import { useSessionStore } from "../stores/session";
 import { chapterFilename } from "../utils/filename";
 import { formatChapterText } from "../utils/formatter";
 import { downloadBlob, downloadText } from "../utils/download";
-import { buildProject } from "../utils/project";
+import { buildProject, loadProject } from "../utils/project";
 import JSZip from "jszip";
 
 const store = useSessionStore();
@@ -164,5 +163,18 @@ function scrollToTop() {
   }
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
+
+onMounted(() => {
+  if (store.chapters.length) return;
+  const project = loadProject();
+  if (!project) return;
+  store.setSettings(project.settings);
+  store.setRawText(project.rawText);
+  store.setMessages(project.messages ?? []);
+  store.setChapters(project.chapters ?? []);
+  if (project.selectedChapterId) {
+    store.selectChapter(project.selectedChapterId);
+  }
+});
 
 </script>
