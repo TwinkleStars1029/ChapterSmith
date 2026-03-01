@@ -34,7 +34,7 @@
               
             <div>
               <h2>來源 App</h2>
-              <p>卿卿我我/酒館 支援官方對話紀錄<br>GPT/Gemini/Grok/perplexity/Claude 使用 <a class="inline-link" href="https://chromewebstore.google.com/detail/chatgpt-ai-backup-export/oedpeddiacomhhfieanenlmdghkolgng">Chat backup</a> 備份格式</p>
+              <p class="muted">- 卿卿我我 / 酒館 支援官方對話紀錄<br>- GPT / Gemini / Grok / perplexity / Claude 使用 <a class="inline-link" href="https://chromewebstore.google.com/detail/chatgpt-ai-backup-export/oedpeddiacomhhfieanenlmdghkolgng">Chat backup</a> 備份格式</p>
               <SourcePicker v-model="store.settings.sourceApp" />
             </div>
             <h2>上傳對話紀錄</h2>
