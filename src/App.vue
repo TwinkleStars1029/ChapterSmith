@@ -9,11 +9,22 @@
         </nav>
       </div>
     </header>
-    <main class="app-main">
+     <main class="app-main">
       <RouterView />
     </main>
+    <footer class="app-footer">
+      <a
+        class="footer-link"
+        href="https://forms.gle/hxZ9LpzwMCyCs3UJ7"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        問題回報
+      </a>
+    </footer>
   </div>
-</template>
+ </template> 
+
 
 <script setup lang="ts">
 import { RouterLink, RouterView } from "vue-router";
