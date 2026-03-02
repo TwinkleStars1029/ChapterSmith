@@ -27,7 +27,7 @@ body {
 body {
   margin: 0;
   background: radial-gradient(circle at top left, #fff1dd, #f7f3ee 50%, #efe7de 100%);
-  overflow: hidden;
+  overflow: auto;
 }
 
 button {  
@@ -89,8 +89,7 @@ a {
 .app-main {
   flex: 1;
   padding: 0px;
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow: visible;
 }
 
 .app-footer {
@@ -100,7 +99,6 @@ a {
   background: #fffaf2;
   display: flex;
   justify-content: center;
-  z-index: 9;
 }
 
 .footer-link {
@@ -416,7 +414,6 @@ h2 {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  position: relative;
 }
 
 .button-icon {
@@ -429,81 +426,6 @@ h2 {
   width: 18px;
   height: 18px;
   display: block;
-}
-
-.icon-button::after {
-  content: attr(data-tooltip);
-  position: absolute;
-  left: 50%;
-  bottom: calc(100% + 8px);
-  transform: translate(-50%, 4px);
-  background: #1f1b16;
-  color: #fff;
-  padding: 6px 10px;
-  border-radius: 8px;
-  font-size: 12px;
-  white-space: nowrap;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.2s ease, transform 0.2s ease;
-  z-index: 6;
-}
-
-.icon-button::before {
-  content: "";
-  position: absolute;
-  left: 50%;
-  bottom: calc(100% + 2px);
-  transform: translateX(-50%);
-  border: 6px solid transparent;
-  border-top-color: #1f1b16;
-  opacity: 0;
-  transition: opacity 0.2s ease;
-  pointer-events: none;
-  z-index: 5;
-}
-
-.icon-button:hover::after,
-.icon-button:hover::before,
-.icon-button:focus-visible::after,
-.icon-button:focus-visible::before,
-.icon-button:active::after,
-.icon-button:active::before {
-  opacity: 1;
-  transform: translate(-50%, 0);
-}
-
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(15, 12, 9, 0.45);
-  display: grid;
-  place-items: center;
-  padding: 24px;
-  z-index: 30;
-}
-
-.modal-card {
-  width: min(92vw, 420px);
-  background: #fffaf2;
-  border: 1px solid var(--line);
-  border-radius: 20px;
-  box-shadow: var(--shadow);
-  padding: 20px;
-  display: grid;
-  gap: 12px;
-}
-
-.modal-card h3 {
-  margin: 0;
-  font-size: 20px;
-}
-
-.modal-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 12px;
-  margin-top: 4px;
 }
 
 button {
@@ -799,9 +721,7 @@ button.ghost {
 
   .app-main {
     padding: 0px;
-    
-    overflow-y: auto;
-    overflow-x: hidden;
+    overflow: auto;
   }
 
   .panel {
@@ -903,16 +823,8 @@ button.ghost {
     display: inline-flex;
   }
 
-  .adjust-controls {
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  .adjust-controls button,
   .adjust-controls .muted {
-    flex: 0 0 auto;
-    white-space: nowrap;
+    flex-basis: 100%;
   }
 
   .message-scroll {
