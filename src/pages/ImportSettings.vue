@@ -114,6 +114,17 @@
       </div>
 
     </div>
+    
+    <footer class="app-footer">
+      <a
+        class="footer-link"
+        href="https://forms.gle/hxZ9LpzwMCyCs3UJ7"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        問題回報
+      </a>
+    </footer>
   </section>
 </template>
 

@@ -39,7 +39,7 @@ a {
 }
 
 .app-shell {
-  min-height: 100vh;
+  height: 100vh;
   display: flex;
   flex-direction: column;
 }
@@ -418,13 +418,13 @@ h2 {
 
 .button-icon {
   display: none;
-  font-size: 18px;
+  font-size: 14px;
   line-height: 1;
 }
 
 .button-icon svg {
-  width: 18px;
-  height: 18px;
+  width: 14px;
+  height: 14px;
   display: block;
 }
 

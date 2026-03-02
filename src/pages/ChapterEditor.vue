@@ -16,6 +16,7 @@
           >
             <span class="button-text">重設章節名稱為第N章</span>
             <span class="button-icon" aria-hidden="true">
+            重設章節名稱
               <svg viewBox="0 0 24 24" role="presentation" focusable="false">
                 <path
                   d="M21 12a9 9 0 1 1-3.2-6.9M21 4v6h-6"
@@ -37,6 +38,7 @@
           >
             <span class="button-text">匯出專案</span>
             <span class="button-icon" aria-hidden="true">
+              匯出專案
               <svg viewBox="0 0 24 24" role="presentation" focusable="false">
                 <path
                   d="M12 3v12M8 7l4-4 4 4M5 15v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4"
@@ -58,6 +60,7 @@
           >
             <span class="button-text">下載全部章節 (zip)</span>
             <span class="button-icon" aria-hidden="true">
+            下載全部
               <svg viewBox="0 0 24 24" role="presentation" focusable="false">
                 <path
                   d="M12 3v12M8 11l4 4 4-4M5 19h14"
