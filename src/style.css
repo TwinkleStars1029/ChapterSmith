@@ -397,6 +397,7 @@ h2 {
   align-items: center;
   justify-content: center;
   gap: 8px;
+  position: relative;
 }
 
 .button-icon {
@@ -409,6 +410,48 @@ h2 {
   width: 18px;
   height: 18px;
   display: block;
+}
+
+.icon-button::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 8px);
+  transform: translate(-50%, 4px);
+  background: #1f1b16;
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 12px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  z-index: 6;
+}
+
+.icon-button::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 2px);
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: #1f1b16;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.icon-button:hover::after,
+.icon-button:hover::before,
+.icon-button:focus-visible::after,
+.icon-button:focus-visible::before,
+.icon-button:active::after,
+.icon-button:active::before {
+  opacity: 1;
+  transform: translate(-50%, 0);
 }
 
 button {
@@ -806,8 +849,16 @@ button.ghost {
     display: inline-flex;
   }
 
+  .adjust-controls {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .adjust-controls button,
   .adjust-controls .muted {
-    flex-basis: 100%;
+    flex: 0 0 auto;
+    white-space: nowrap;
   }
 
   .message-scroll {

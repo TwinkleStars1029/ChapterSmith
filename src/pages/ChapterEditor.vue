@@ -7,10 +7,15 @@
           <p class="muted">微調章節切點、設定章節名稱並下載整理後檔案。</p>
         </div>
         <div v-if="store.chapters.length" class="actions">
-          <button class="ghost icon-button" type="button" @click="resetTitles" aria-label="重設章節名稱為第N章">
+          <button
+            class="ghost icon-button"
+            type="button"
+            @click="resetTitles"
+            aria-label="重設章節名稱為第N章"
+            data-tooltip="重設章節名稱為第N章"
+          >
             <span class="button-text">重設章節名稱為第N章</span>
             <span class="button-icon" aria-hidden="true">
-              重設名稱
               <svg viewBox="0 0 24 24" role="presentation" focusable="false">
                 <path
                   d="M21 12a9 9 0 1 1-3.2-6.9M21 4v6h-6"
@@ -23,10 +28,15 @@
               </svg>
             </span>
           </button>
-          <button class="ghost icon-button" type="button" @click="onExportProject" aria-label="匯出專案">
+          <button
+            class="ghost icon-button"
+            type="button"
+            @click="onExportProject"
+            aria-label="匯出專案"
+            data-tooltip="匯出專案"
+          >
             <span class="button-text">匯出專案</span>
             <span class="button-icon" aria-hidden="true">
-              匯出專案
               <svg viewBox="0 0 24 24" role="presentation" focusable="false">
                 <path
                   d="M12 3v12M8 7l4-4 4 4M5 15v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4"
@@ -39,10 +49,15 @@
               </svg>
             </span>
           </button>
-          <button class="ghost icon-button" type="button" @click="downloadAll" aria-label="下載全部章節 (zip)">
+          <button
+            class="ghost icon-button"
+            type="button"
+            @click="downloadAll"
+            aria-label="下載全部章節 (zip)"
+            data-tooltip="下載全部章節 (zip)"
+          >
             <span class="button-text">下載全部章節 (zip)</span>
             <span class="button-icon" aria-hidden="true">
-              下載全部
               <svg viewBox="0 0 24 24" role="presentation" focusable="false">
                 <path
                   d="M12 3v12M8 11l4 4 4-4M5 19h14"
@@ -76,22 +91,24 @@
                 <label>
                   <span>章節選擇</span>
                   <select v-model="selectedIdModel">
-                    <option
-                      v-for="(chapter, index) in store.chapters"
-                      :key="chapter.id"
-                      :value="chapter.id"
-                    >
-                    </option>
-                  </select>
-                </label>
-              </div>
+                <option
+                  v-for="(chapter, index) in store.chapters"
+                  :key="chapter.id"
+                  :value="chapter.id"
+                >
+                  第{{ index + 1 }}章
+                </option>
+              </select>
+            </label>
+          </div>
               <div class="adjust-controls">
                 <button type="button" @click="adjust(-5)">-5</button>
                 <button type="button" @click="adjust(-1)">-1</button>
                 <button type="button" @click="adjust(1)">+1</button>
                 <button type="button" @click="adjust(5)">+5</button>
-                <span class="muted">（-X 送出 X 則到下一章，+X 從下一章取 X 則）</span>
+                <span class="muted">共 {{ selectedChapter.messages.length }} 則</span>
               </div>
+              <span class="muted">（-X 送出 X 則到下一章，+X 從下一章取 X 則）</span>
             </div>
           </div>
           <ChapterTitleInput v-model="chapterTitle" />
