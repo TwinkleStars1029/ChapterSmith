@@ -428,6 +428,39 @@ h2 {
   display: block;
 }
 
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(12, 10, 8, 0.5);
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  z-index: 30;
+}
+
+.modal-card {
+  width: min(92vw, 440px);
+  background: #fffaf2;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  box-shadow: var(--shadow);
+  padding: 22px;
+  display: grid;
+  gap: 12px;
+}
+
+.modal-card h3 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 4px;
+}
+
 button {
   font-family: inherit;
   border-radius: 12px;

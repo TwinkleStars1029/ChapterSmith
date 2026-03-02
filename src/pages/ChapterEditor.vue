@@ -127,11 +127,22 @@
         </section>
       </div>
     </div>
+    <div v-if="showLeaveModal" class="modal-overlay" role="dialog" aria-modal="true">
+      <div class="modal-card">
+        <h3>切換提醒</h3>
+        <p class="muted">手機版切回載入頁可能導致資料清空，建議先存檔或匯出專案。</p>
+        <div class="modal-actions">
+          <button class="ghost" type="button" @click="cancelLeave">留在本頁</button>
+          <button class="primary" type="button" @click="confirmLeave">仍要切換</button>
+        </div>
+      </div>
+    </div>
   </section>
 </template>
 
 <script setup lang="ts">
 import { computed, onMounted, ref } from "vue";
+import { onBeforeRouteLeave, useRouter } from "vue-router";
 import ChapterList from "../components/ChapterList.vue";
 import ChapterTitleInput from "../components/ChapterTitleInput.vue";
 import MessageList from "../components/MessageList.vue";
@@ -143,6 +154,7 @@ import { buildProject, loadProject } from "../utils/project";
 import JSZip from "jszip";
 
 const store = useSessionStore();
+const router = useRouter();
 
 const selectedChapter = computed(() => store.selectedChapter);
 
@@ -151,6 +163,8 @@ const selectedIndex = computed(() =>
 );
 
 const messageScrollRef = ref<HTMLElement | null>(null);
+const showLeaveModal = ref(false);
+const pendingPath = ref<string | null>(null);
 
 const selectedIdModel = computed({
   get: () => store.selectedChapterId ?? "",
@@ -246,5 +260,26 @@ onMounted(() => {
     store.selectChapter(project.selectedChapterId);
   }
 });
+
+onBeforeRouteLeave((to) => {
+  if (to.name !== "import") return true;
+  if (!store.messages.length && !store.chapters.length) return true;
+  showLeaveModal.value = true;
+  pendingPath.value = router.resolve(to).fullPath;
+  return false;
+});
+
+function confirmLeave() {
+  showLeaveModal.value = false;
+  if (pendingPath.value) {
+    router.push(pendingPath.value);
+  }
+  pendingPath.value = null;
+}
+
+function cancelLeave() {
+  showLeaveModal.value = false;
+  pendingPath.value = null;
+}
 
 </script>
