@@ -3,7 +3,7 @@
     <div v-for="message in messages" :key="message.id" class="message-item">
       <div class="message-meta">
         <span class="message-role" :data-role="message.role">{{ roleLabel(message.role) }}</span>
-        <span class="message-speaker">{{ message.speaker || "Unknown" }}</span>
+        <span class="message-speaker">{{ message.speaker || "other" }}</span>
       </div>
       <div class="message-content markdown" v-html="renderMarkdown(message.content)"></div>
     </div>
@@ -25,7 +25,7 @@ function roleLabel(role: ChatRole): string {
     case "system":
       return "System";
     default:
-      return "Unknown";
+      return "other";
   }
 }
 </script>

@@ -30,6 +30,9 @@ body {
   overflow: hidden;
 }
 
+button {  
+  color: var(--accent);
+}
 a {
   color: inherit;
   text-decoration: none;
@@ -175,6 +178,7 @@ a {
   padding: 8px 16px;
   border: 1px solid var(--line);
   background: #f3e7d8;
+  color: var(--accent);
   font-weight: 600;
 }
 
@@ -314,6 +318,12 @@ h2 {
   border-color: #bfe6cb;
 }
 
+.status-pill.is-loading {
+  background: #fff4d6;
+  color: #8a5a10;
+  border-color: #f1d39b;
+}
+
 .status-pill.is-fail {
   background: #fde7e5;
   color: #9c2f1f;
@@ -326,6 +336,55 @@ h2 {
   border-color: #e2d7c8;
 }
 
+.status-spinner {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid #f1d39b;
+  border-top-color: #c4831b;
+  animation: spin 0.8s linear infinite;
+}
+
+.status-progress {
+  height: 6px;
+  border-radius: 999px;
+  background: #f3e7d8;
+  overflow: hidden;
+  position: relative;
+}
+
+.status-progress::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, #c85a2a, transparent);
+  animation: progress-move 1.2s ease-in-out infinite;
+}
+
+.success-hint {
+  margin: 12px 0 0;
+  padding: 8px 12px;
+  border-radius: 12px;
+  background: #e5f6eb;
+  color: #1c6e3a;
+  font-weight: 600;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes progress-move {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
 .import-actions {
   justify-content: flex-end;
 }
@@ -333,6 +392,25 @@ h2 {
 .actions {
   display: flex;
   gap: 12px;
+}
+
+.icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.button-icon {
+  display: none;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.button-icon svg {
+  width: 18px;
+  height: 18px;
+  display: block;
 }
 
 button {
@@ -703,6 +781,31 @@ button.ghost {
     width: 100%;
     max-width: 100%;
     white-space: normal;
+  }
+
+  .panel-header .actions {
+    justify-content: flex-end;
+    flex-wrap: nowrap;
+    gap: 8px;
+  }
+
+  .panel-header .actions .icon-button {
+    padding: 8px 10px;
+    min-width: 40px;
+  }
+
+  .panel-header .actions button {
+    width: auto;
+    max-width: none;
+    white-space: nowrap;
+  }
+
+  .panel-header .actions .button-text {
+    display: none;
+  }
+
+  .panel-header .actions .button-icon {
+    display: inline-flex;
   }
 
   .adjust-controls .muted {

@@ -103,8 +103,11 @@
               <div class="status-row">
                 <span>解析狀態：</span>
                 <span class="status-pill" :class="parseStatusClass">{{ parseStatus }}</span>
+                <span v-if="isParsing" class="status-spinner" aria-hidden="true"></span>
               </div>
+              <div v-if="isParsing" class="status-progress" aria-hidden="true"></div>
             </div>
+            <p v-if="parseStatus === '成功'" class="success-hint">章節預設切分成功，進入編輯頁微調</p>
             <p v-if="store.parseError" class="error">失敗原因：{{ store.parseError }}</p>
           </div>
         </aside>
@@ -132,16 +135,20 @@ const projectInput = ref<HTMLInputElement | null>(null);
 const fileName = ref("");
 const isDragOver = ref(false);
 const activeTab = ref<"upload" | "project">("upload");
+const isParsing = ref(false);
+let parseTicket = 0;
 
 const uniqueSpeakers = computed(() =>
   new Set(store.messages.map((msg) => msg.speaker || msg.role)).size
 );
 const parseStatus = computed(() => {
+  if (isParsing.value) return "解析中…";
   if (store.parseError) return "失敗";
   if (store.messages.length > 0) return "成功";
   return "尚未解析";
 });
 const parseStatusClass = computed(() => {
+  if (isParsing.value) return "is-loading";
   if (store.parseError) return "is-fail";
   if (store.messages.length > 0) return "is-success";
   return "is-idle";
@@ -254,21 +261,29 @@ function validateFormat(rawText: string): string | null {
 function parseNow() {
   if (!store.rawText) {
     store.setMessages([]);
+    isParsing.value = false;
     return;
   }
-  const formatError = validateFormat(store.rawText);
-  if (formatError) {
-    store.setParseError(`不符合格式：${formatError}`);
-    store.setMessages([]);
-    return;
-  }
-  const parsed = parseBySource(store.settings.sourceApp, store.rawText);
-  store.setMessages(parsed);
-  if (!parsed.length) {
-    store.setParseError("不符合格式：解析結果為空，請確認檔案格式或來源 app 是否正確。");
-  } else {
-    store.setParseError("");
-  }
+  const ticket = ++parseTicket;
+  isParsing.value = true;
+  requestAnimationFrame(() => {
+    if (ticket !== parseTicket) return;
+    const formatError = validateFormat(store.rawText);
+    if (formatError) {
+      store.setParseError(`不符合格式：${formatError}`);
+      store.setMessages([]);
+      isParsing.value = false;
+      return;
+    }
+    const parsed = parseBySource(store.settings.sourceApp, store.rawText);
+    store.setMessages(parsed);
+    if (!parsed.length) {
+      store.setParseError("不符合格式：解析結果為空，請確認檔案格式或來源 app 是否正確。");
+    } else {
+      store.setParseError("");
+    }
+    isParsing.value = false;
+  });
 }
 
 function handleFile(file: File) {
@@ -279,15 +294,18 @@ function handleFile(file: File) {
     store.setParseError(isChatBackup ? "僅支援 .md 檔案。" : "僅支援 .txt 檔案。");
     store.setRawText("");
     store.setMessages([]);
+    isParsing.value = false;
     return;
   }
   if (file.size > MAX_FILE_SIZE) {
     store.setParseError("檔案內容太大，請縮小後再上傳。");
     store.setRawText("");
     store.setMessages([]);
+    isParsing.value = false;
     return;
   }
   fileName.value = file.name;
+  isParsing.value = true;
   const reader = new FileReader();
   reader.onload = () => {
     const content = typeof reader.result === "string" ? reader.result : "";
@@ -295,6 +313,7 @@ function handleFile(file: File) {
       store.setParseError("檔案內容為空。");
       store.setRawText("");
       store.setMessages([]);
+      isParsing.value = false;
       return;
     }
     store.setRawText(content);

@@ -7,8 +7,51 @@
           <p class="muted">微調章節切點、設定章節名稱並下載整理後檔案。</p>
         </div>
         <div v-if="store.chapters.length" class="actions">
-          <button class="ghost" type="button" @click="onExportProject">匯出專案</button>
-          <button class="ghost" type="button" @click="downloadAll">下載全部章節 (zip)</button>
+          <button class="ghost icon-button" type="button" @click="resetTitles" aria-label="重設章節名稱為第N章">
+            <span class="button-text">重設章節名稱為第N章</span>
+            <span class="button-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" role="presentation" focusable="false">
+                <path
+                  d="M21 12a9 9 0 1 1-3.2-6.9M21 4v6h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </span>
+          </button>
+          <button class="ghost icon-button" type="button" @click="onExportProject" aria-label="匯出專案">
+            <span class="button-text">匯出專案</span>
+            <span class="button-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" role="presentation" focusable="false">
+                <path
+                  d="M12 3v12M8 7l4-4 4 4M5 15v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </span>
+          </button>
+          <button class="ghost icon-button" type="button" @click="downloadAll" aria-label="下載全部章節 (zip)">
+            <span class="button-text">下載全部章節 (zip)</span>
+            <span class="button-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" role="presentation" focusable="false">
+                <path
+                  d="M12 3v12M8 11l4 4 4-4M5 19h14"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </span>
+          </button>
         </div>
       </header>
 
@@ -37,10 +80,21 @@
               </select>
             </label>
           </div>
-            <button class="primary" type="button" @click="downloadCurrent">下載本章節</button>
           <div class="chapter-header">
             <div class="chapter-controls">
-              <ChapterTitleInput v-model="chapterTitle" />
+              <div class="chapter-select">
+                <label>
+                  <span>章節選擇</span>
+                  <select v-model="selectedIdModel">
+                    <option
+                      v-for="(chapter, index) in store.chapters"
+                      :key="chapter.id"
+                      :value="chapter.id"
+                    >
+                    </option>
+                  </select>
+                </label>
+              </div>
               <div class="adjust-controls">
                 <button type="button" @click="adjust(-5)">-5</button>
                 <button type="button" @click="adjust(-1)">-1</button>
@@ -50,6 +104,8 @@
               </div>
             </div>
           </div>
+          <ChapterTitleInput v-model="chapterTitle" />
+          <button class="primary" type="button" @click="downloadCurrent">下載本章節</button>
 
           <div class="message-scroll" ref="messageScrollRef">
             <MessageList :messages="selectedChapter.messages" />
@@ -132,6 +188,10 @@ function onExportProject() {
     type: "application/json;charset=utf-8"
   });
   downloadBlob(buildProjectFilename(), blob);
+}
+
+function resetTitles() {
+  store.resetChapterTitles();
 }
 
 async function downloadAll() {

@@ -43,7 +43,7 @@
 
 **Core Data Model**
 ```ts
-export type ChatRole = "user" | "assistant" | "system" | "unknown";
+export type ChatRole = "user" | "assistant" | "system" | "other";
 
 export interface ChatMessage {
   id: string;
@@ -78,7 +78,7 @@ export interface ImportSettings {
 3. 微調結果直接更新對應章節的 `messages`。
 
 **Chapter Title Strategy**
-1. 預設標題可取「章{n} + 第一則訊息前 N 字」。
+1. 預設標題可取「章{n}」。
 2. 章節標題可直接編輯，更新後即生效。
 3. 標題變更不影響訊息內容，只影響顯示與檔名。
 
