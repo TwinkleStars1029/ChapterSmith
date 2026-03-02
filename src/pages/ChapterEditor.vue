@@ -128,7 +128,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import ChapterList from "../components/ChapterList.vue";
 import ChapterTitleInput from "../components/ChapterTitleInput.vue";
 import MessageList from "../components/MessageList.vue";
@@ -136,12 +136,13 @@ import { useSessionStore } from "../stores/session";
 import { chapterFilename } from "../utils/filename";
 import { formatChapterText } from "../utils/formatter";
 import { downloadBlob, downloadText } from "../utils/download";
-import { buildProject, loadProject } from "../utils/project";
+import { buildProject, loadProject, saveProject } from "../utils/project";
 import JSZip from "jszip";
 
 const store = useSessionStore();
 
 const selectedChapter = computed(() => store.selectedChapter);
+const projectFileName = ref("");
 
 const selectedIndex = computed(() =>
   store.chapters.findIndex((chapter) => chapter.id === store.selectedChapterId)
@@ -232,7 +233,6 @@ function scrollToTop() {
 }
 
 onMounted(() => {
-  if (store.chapters.length) return;
   const project = loadProject();
   if (!project) return;
   store.setSettings(project.settings);
@@ -242,6 +242,29 @@ onMounted(() => {
   if (project.selectedChapterId) {
     store.selectChapter(project.selectedChapterId);
   }
+  projectFileName.value = project.meta?.fileName ?? "";
 });
+
+watch(
+  () => ({
+    settings: store.settings,
+    rawText: store.rawText,
+    messages: store.messages,
+    chapters: store.chapters,
+    selectedChapterId: store.selectedChapterId
+  }),
+  (state) => {
+    const project = buildProject({
+      settings: state.settings,
+      rawText: state.rawText,
+      messages: state.messages,
+      chapters: state.chapters,
+      selectedChapterId: state.selectedChapterId,
+      fileName: projectFileName.value
+    });
+    saveProject(project);
+  },
+  { deep: true }
+);
 
 </script>
