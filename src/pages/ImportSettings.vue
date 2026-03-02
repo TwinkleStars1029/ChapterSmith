@@ -415,6 +415,15 @@ function onSegment() {
   }
   const chapters = segmentMessages(store.messages, store.settings.chapterSize);
   store.setChapters(chapters);
+  const project = buildProject({
+    settings: store.settings,
+    rawText: store.rawText,
+    messages: store.messages,
+    chapters,
+    selectedChapterId: store.selectedChapterId,
+    fileName: fileName.value
+  });
+  saveProject(project);
   router.push("/chapters");
 }
 

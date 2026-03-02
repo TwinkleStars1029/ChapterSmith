@@ -7,13 +7,7 @@
           <p class="muted">微調章節切點、設定章節名稱並下載整理後檔案。</p>
         </div>
         <div v-if="store.chapters.length" class="actions">
-          <button
-            class="ghost icon-button"
-            type="button"
-            @click="resetTitles"
-            aria-label="重設章節名稱為第N章"
-            data-tooltip="重設章節名稱為第N章"
-          >
+          <button class="ghost icon-button" type="button" @click="resetTitles" aria-label="重設章節名稱為第N章">
             <span class="button-text">重設章節名稱為第N章</span>
             <span class="button-icon" aria-hidden="true">
               <svg viewBox="0 0 24 24" role="presentation" focusable="false">
@@ -28,13 +22,7 @@
               </svg>
             </span>
           </button>
-          <button
-            class="ghost icon-button"
-            type="button"
-            @click="onExportProject"
-            aria-label="匯出專案"
-            data-tooltip="匯出專案"
-          >
+          <button class="ghost icon-button" type="button" @click="onExportProject" aria-label="匯出專案">
             <span class="button-text">匯出專案</span>
             <span class="button-icon" aria-hidden="true">
               <svg viewBox="0 0 24 24" role="presentation" focusable="false">
@@ -49,15 +37,10 @@
               </svg>
             </span>
           </button>
-          <button
-            class="ghost icon-button"
-            type="button"
-            @click="downloadAll"
-            aria-label="下載全部章節 (zip)"
-            data-tooltip="下載全部章節 (zip)"
-          >
+          <button class="ghost icon-button" type="button" @click="downloadAll" aria-label="下載全部章節 (zip)">
             <span class="button-text">下載全部章節 (zip)</span>
             <span class="button-icon" aria-hidden="true">
+            
               <svg viewBox="0 0 24 24" role="presentation" focusable="false">
                 <path
                   d="M12 3v12M8 11l4 4 4-4M5 19h14"
@@ -91,24 +74,22 @@
                 <label>
                   <span>章節選擇</span>
                   <select v-model="selectedIdModel">
-                <option
-                  v-for="(chapter, index) in store.chapters"
-                  :key="chapter.id"
-                  :value="chapter.id"
-                >
-                  第{{ index + 1 }}章
-                </option>
-              </select>
-            </label>
-          </div>
+                    <option
+                      v-for="(chapter, index) in store.chapters"
+                      :key="chapter.id"
+                      :value="chapter.id"
+                    >
+                    </option>
+                  </select>
+                </label>
+              </div>
               <div class="adjust-controls">
                 <button type="button" @click="adjust(-5)">-5</button>
                 <button type="button" @click="adjust(-1)">-1</button>
                 <button type="button" @click="adjust(1)">+1</button>
                 <button type="button" @click="adjust(5)">+5</button>
-                <span class="muted">共 {{ selectedChapter.messages.length }} 則</span>
+                <span class="muted">（-X 送出 X 則到下一章，+X 從下一章取 X 則）</span>
               </div>
-              <span class="muted">（-X 送出 X 則到下一章，+X 從下一章取 X 則）</span>
             </div>
           </div>
           <ChapterTitleInput v-model="chapterTitle" />
@@ -124,22 +105,11 @@
         </section>
       </div>
     </div>
-    <div v-if="showLeaveConfirm" class="modal-overlay" role="dialog" aria-modal="true">
-      <div class="modal-card">
-        <h3>切換提醒</h3>
-        <p class="muted">建議先存檔或匯出專案，再切回載入頁以避免資料遺失。</p>
-        <div class="modal-actions">
-          <button class="ghost" type="button" @click="cancelLeave">留在本頁</button>
-          <button class="primary" type="button" @click="confirmLeave">仍要切換</button>
-        </div>
-      </div>
-    </div>
   </section>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from "vue";
-import { onBeforeRouteLeave, useRouter } from "vue-router";
+import { computed, onMounted, ref } from "vue";
 import ChapterList from "../components/ChapterList.vue";
 import ChapterTitleInput from "../components/ChapterTitleInput.vue";
 import MessageList from "../components/MessageList.vue";
@@ -147,17 +117,12 @@ import { useSessionStore } from "../stores/session";
 import { chapterFilename } from "../utils/filename";
 import { formatChapterText } from "../utils/formatter";
 import { downloadBlob, downloadText } from "../utils/download";
-import { buildProject, loadProject, saveProject } from "../utils/project";
+import { buildProject, loadProject } from "../utils/project";
 import JSZip from "jszip";
 
 const store = useSessionStore();
-const router = useRouter();
 
 const selectedChapter = computed(() => store.selectedChapter);
-const projectFileName = ref("");
-const showLeaveConfirm = ref(false);
-const pendingRoute = ref<ReturnType<typeof router.resolve> | null>(null);
-const allowLeaveOnce = ref(false);
 
 const selectedIndex = computed(() =>
   store.chapters.findIndex((chapter) => chapter.id === store.selectedChapterId)
@@ -248,6 +213,7 @@ function scrollToTop() {
 }
 
 onMounted(() => {
+  if (store.chapters.length) return;
   const project = loadProject();
   if (!project) return;
   store.setSettings(project.settings);
@@ -257,57 +223,6 @@ onMounted(() => {
   if (project.selectedChapterId) {
     store.selectChapter(project.selectedChapterId);
   }
-  projectFileName.value = project.meta?.fileName ?? "";
 });
-
-onBeforeRouteLeave((to) => {
-  if (typeof window === "undefined") return true;
-  if (allowLeaveOnce.value) {
-    allowLeaveOnce.value = false;
-    return true;
-  }
-  const isMobile = window.matchMedia("(max-width: 960px)").matches;
-  if (isMobile && to.name === "import") {
-    showLeaveConfirm.value = true;
-    pendingRoute.value = router.resolve(to);
-    return false;
-  }
-  return true;
-});
-
-function confirmLeave() {
-  showLeaveConfirm.value = false;
-  if (!pendingRoute.value) return;
-  allowLeaveOnce.value = true;
-  router.push(pendingRoute.value.fullPath);
-  pendingRoute.value = null;
-}
-
-function cancelLeave() {
-  showLeaveConfirm.value = false;
-  pendingRoute.value = null;
-}
-
-watch(
-  () => ({
-    settings: store.settings,
-    rawText: store.rawText,
-    messages: store.messages,
-    chapters: store.chapters,
-    selectedChapterId: store.selectedChapterId
-  }),
-  (state) => {
-    const project = buildProject({
-      settings: state.settings,
-      rawText: state.rawText,
-      messages: state.messages,
-      chapters: state.chapters,
-      selectedChapterId: state.selectedChapterId,
-      fileName: projectFileName.value
-    });
-    saveProject(project);
-  },
-  { deep: true }
-);
 
 </script>
