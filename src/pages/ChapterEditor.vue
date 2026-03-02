@@ -124,11 +124,22 @@
         </section>
       </div>
     </div>
+    <div v-if="showLeaveConfirm" class="modal-overlay" role="dialog" aria-modal="true">
+      <div class="modal-card">
+        <h3>切換提醒</h3>
+        <p class="muted">建議先存檔或匯出專案，再切回載入頁以避免資料遺失。</p>
+        <div class="modal-actions">
+          <button class="ghost" type="button" @click="cancelLeave">留在本頁</button>
+          <button class="primary" type="button" @click="confirmLeave">仍要切換</button>
+        </div>
+      </div>
+    </div>
   </section>
 </template>
 
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from "vue";
+import { onBeforeRouteLeave, useRouter } from "vue-router";
 import ChapterList from "../components/ChapterList.vue";
 import ChapterTitleInput from "../components/ChapterTitleInput.vue";
 import MessageList from "../components/MessageList.vue";
@@ -140,9 +151,13 @@ import { buildProject, loadProject, saveProject } from "../utils/project";
 import JSZip from "jszip";
 
 const store = useSessionStore();
+const router = useRouter();
 
 const selectedChapter = computed(() => store.selectedChapter);
 const projectFileName = ref("");
+const showLeaveConfirm = ref(false);
+const pendingRoute = ref<ReturnType<typeof router.resolve> | null>(null);
+const allowLeaveOnce = ref(false);
 
 const selectedIndex = computed(() =>
   store.chapters.findIndex((chapter) => chapter.id === store.selectedChapterId)
@@ -244,6 +259,34 @@ onMounted(() => {
   }
   projectFileName.value = project.meta?.fileName ?? "";
 });
+
+onBeforeRouteLeave((to) => {
+  if (typeof window === "undefined") return true;
+  if (allowLeaveOnce.value) {
+    allowLeaveOnce.value = false;
+    return true;
+  }
+  const isMobile = window.matchMedia("(max-width: 960px)").matches;
+  if (isMobile && to.name === "import") {
+    showLeaveConfirm.value = true;
+    pendingRoute.value = router.resolve(to);
+    return false;
+  }
+  return true;
+});
+
+function confirmLeave() {
+  showLeaveConfirm.value = false;
+  if (!pendingRoute.value) return;
+  allowLeaveOnce.value = true;
+  router.push(pendingRoute.value.fullPath);
+  pendingRoute.value = null;
+}
+
+function cancelLeave() {
+  showLeaveConfirm.value = false;
+  pendingRoute.value = null;
+}
 
 watch(
   () => ({
