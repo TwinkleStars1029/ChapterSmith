@@ -240,6 +240,8 @@ onBeforeRouteLeave((to) => {
     allowLeaveOnce.value = false;
     return true;
   }
+  const isMobile = window.matchMedia("(max-width: 960px)").matches;
+  if (!isMobile) return true;
   if (to.name !== "import") return true;
   if (!store.messages.length && !store.chapters.length) return true;
   showLeaveModal.value = true;
