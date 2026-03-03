@@ -165,6 +165,7 @@ const selectedIndex = computed(() =>
 const messageScrollRef = ref<HTMLElement | null>(null);
 const showLeaveModal = ref(false);
 const pendingPath = ref<string | null>(null);
+const allowLeaveOnce = ref(false);
 
 const selectedIdModel = computed({
   get: () => store.selectedChapterId ?? "",
@@ -262,6 +263,10 @@ onMounted(() => {
 });
 
 onBeforeRouteLeave((to) => {
+  if (allowLeaveOnce.value) {
+    allowLeaveOnce.value = false;
+    return true;
+  }
   if (to.name !== "import") return true;
   if (!store.messages.length && !store.chapters.length) return true;
   showLeaveModal.value = true;
@@ -272,6 +277,7 @@ onBeforeRouteLeave((to) => {
 function confirmLeave() {
   showLeaveModal.value = false;
   if (pendingPath.value) {
+    allowLeaveOnce.value = true;
     router.push(pendingPath.value);
   }
   pendingPath.value = null;
