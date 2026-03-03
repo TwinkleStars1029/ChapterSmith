@@ -1,12 +1,6 @@
 ﻿import type { Chapter, ChatMessage } from "../types";
 import { makeId } from "./id";
 
-const TITLE_SNIPPET_LENGTH = 10;
-
-function defaultTitle(index: number, messages: ChatMessage[]): string {
-  return `第${index + 1}章`;
-}
-
 export function segmentMessages(messages: ChatMessage[], chapterSize: number): Chapter[] {
   const size = Math.max(1, Math.floor(chapterSize || 1));
   const chapters: Chapter[] = [];
@@ -15,7 +9,7 @@ export function segmentMessages(messages: ChatMessage[], chapterSize: number): C
     const slice = messages.slice(i, i + size);
     chapters.push({
       id: makeId("chapter"),
-      title: defaultTitle(chapters.length, slice),
+      title: "",
       messages: slice
     });
   }

@@ -8,7 +8,7 @@
       type="button"
       @click="$emit('select', chapter.id)"
     >
-      <div class="chapter-title">{{ index + 1 }}. {{ chapter.title }}</div>
+      <div class="chapter-title">ch{{ index + 1 }}</div>
       <div class="chapter-meta">{{ chapter.messages.length }} 則訊息</div>
     </button>
   </div>

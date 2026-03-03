@@ -57,12 +57,6 @@ export const useSessionStore = defineStore("session", {
         }
       }
     },
-    resetChapterTitles() {
-      this.chapters = this.chapters.map((chapter, index) => ({
-        ...chapter,
-        title: `第${index + 1}章`
-      }));
-    },
     resetAll() {
       this.rawText = "";
       this.messages = [];

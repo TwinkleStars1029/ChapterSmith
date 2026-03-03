@@ -5,6 +5,8 @@
 }
 
 export function chapterFilename(index: number, title: string): string {
-  const safe = sanitizeFilename(title);
+  const trimmed = title.trim();
+  if (!trimmed) return `ch${index}.txt`;
+  const safe = sanitizeFilename(trimmed);
   return `ch${index}_${safe}.txt`;
 }
